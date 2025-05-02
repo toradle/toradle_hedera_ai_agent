@@ -35,6 +35,9 @@ async function initializeAgent() {
   try {
     const llm = new ChatOpenAI({
       modelName: "o3-mini",
+      configuration: {
+        baseURL: process.env.OPENAI_API_BASE_URL,
+      }
     });
 
     // Initialize HederaAgentKit
@@ -55,7 +58,7 @@ async function initializeAgent() {
     const memory = new MemorySaver();
 
     // Additional configuration for the agent
-    const config = { configurable: { thread_id: "Hedera Agent Kit!" } };
+    const config = { configurable: { thread_id: "Hedera Agent Kit!", isCustodial: true } };
 
     // Create the React agent
     const agent = createReactAgent({
@@ -201,6 +204,8 @@ async function main() {
     console.log("Starting Agent...");
     const { agent, config } = await initializeAgent();
     const mode = await chooseMode();
+
+    console.log(config)
 
     if (mode === "chat") {
       await runChatMode(agent, config);
