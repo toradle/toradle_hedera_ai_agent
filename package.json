@@ -5,6 +5,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "ts-node tests/index.ts",
+    "server": "ts-node src/redis_listener.ts",
     "test-vitest": "vitest run",
     "prepare": "npm run build",
     "build": "tsc"
@@ -14,6 +15,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/redis": "^4.0.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
     "vitest": "^3.0.7"
@@ -24,7 +26,8 @@
     "@langchain/langgraph": "^0.2.34",
     "@langchain/openai": "^0.3.16",
     "bignumber.js": "^9.1.2",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "redis": "^5.0.0"
   },
   "repository": {
     "type": "git",

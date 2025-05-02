@@ -108,7 +108,6 @@ export class HederaAgentKit {
         publicKey?: string | undefined,
         network: 'mainnet' | 'testnet' | 'previewnet' = 'mainnet',
     ) {
-        console.log(privateKey)
         if(privateKey){
             // @ts-ignore
             this.client = Client.forNetwork(network).setOperator(accountId, privateKey);
@@ -122,7 +121,6 @@ export class HederaAgentKit {
             }
             this.isCustodial = false;
         }
-        console.log(this.isCustodial)
         this.publicKey = PublicKey.fromString(publicKey!);
         this.network = network;
         this.accountId = accountId;
