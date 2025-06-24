@@ -1,11 +1,10 @@
-import HederaAgentKit from "./agent";
+import { HederaAgentKit } from "./agent";
+import { ServerSigner } from './signer/server-signer';
 import { createHederaTools } from ".";
 import { ChatOpenAI } from "@langchain/openai";
 import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { HumanMessage } from "@langchain/core/messages";
-import * as dotenv from "dotenv";
-import * as readline from "readline";
 
 export const sendPrompt = async (
     agent: any,
@@ -49,19 +48,32 @@ export const initializeAgent = async () => {
       }
     });
 
+    const hgraphConfig = {
+      customUrl: 'https://mainnet.hedera.api.hgraph.dev/v1/<API-KEY>',
+      apiKey: 'your-hgraph-api-key-here'
+    };
+
+    // Initialize signer
+    const signer = new ServerSigner(
+      process.env.HEDERA_ACCOUNT_ID!,
+      process.env.HEDERA_PRIVATE_KEY!,
+      process.env.HEDERA_NETWORK_TYPE as "mainnet" | "testnet"
+    );
+
     // Initialize HederaAgentKit
     const hederaKit = new HederaAgentKit(
-        process.env.HEDERA_ACCOUNT_ID!,
-        // process.env.CUSTODIAL_MODE === 'true' ? process.env.HEDERA_PRIVATE_KEY! : undefined,
-        process.env.HEDERA_PRIVATE_KEY!,
-        process.env.HEDERA_PUBLIC_KEY!,
-        // Pass your network of choice. Default is "testnet".
-        // You can specify 'testnet', 'previewnet', or 'mainnet'.
-        process.env.HEDERA_NETWORK_TYPE as "mainnet" | "testnet" | "previewnet" || "testnet"
+      signer,
+      undefined, // pluginConfig
+      'provideBytes', // operationalMode
+      undefined, // userAccountId
+      true, // scheduleUserTransactionsInBytesMode
+      undefined, // modelCapability
+      undefined, // modelName
+      hgraphConfig // mirrorNodeConfig
     );
 
     // Create the LangChain-compatible tools
-    const tools = createHederaTools(hederaKit);
+    const tools = await createHederaTools(hederaKit);
 
     // Prepare an in-memory checkpoint saver
     const memory = new MemorySaver();

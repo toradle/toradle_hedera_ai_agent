@@ -1,36 +1,90 @@
 {
   "name": "hedera-agent-kit",
-  "version": "1.0.6",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "version": "0.0.40",
+  "type": "module",
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "browser": {
+        "import": "./dist/esm/index.js",
+        "require": "./dist/umd/hedera-agent-kit.umd.js"
+      },
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
-    "test": "ts-node tests/index.ts",
-    "server": "ts-node src/redis_listener.ts",
-    "test-vitest": "vitest run",
+    "demo:auto": "tsx examples/langchain-demo.ts directExecution",
+    "demo:human": "tsx examples/langchain-demo.ts provideBytes",
+    "demo:notes": "tsx examples/test-notes-system.ts",
+    "test": "vitest run",
+    "test:integration": "vitest run tests/integration",
     "prepare": "npm run build",
-    "build": "tsc"
+    "clean": "rimraf dist",
+    "build:es": "BUILD_FORMAT=es vite build",
+    "build:cjs": "BUILD_FORMAT=cjs vite build",
+    "build:umd": "BUILD_FORMAT=umd vite build",
+    "build": "npm run clean && npm run build:es && npm run build:cjs && npm run build:umd",
+    "prepublishOnly": "npm run build",
+    "release": "npm publish --access public",
+    "release:canary": "npm run prepublishOnly && npm publish --tag canary --access public",
+    "version:canary": "npm version prerelease --preid canary --no-git-tag-version",
+    "publish:canary": "npm run version:canary && npm run release:canary",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "description": "",
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
     "@types/redis": "^4.0.10",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.2",
+    "@typescript-eslint/eslint-plugin": "^8.30.1",
+    "@typescript-eslint/parser": "^8.30.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.0",
+    "eslint-plugin-sonarjs": "^3.0.2",
+    "rimraf": "^6.0.1",
+    "rollup-plugin-polyfill-node": "^0.13.0",
+    "terser": "^5.39.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^3.9.1",
+    "vite-plugin-node-polyfills": "^0.23.0",
+    "vite-plugin-string-replace": "^1.1.3",
     "vitest": "^3.0.7"
   },
   "dependencies": {
-    "@hashgraph/sdk": "^2.56.0",
-    "@langchain/core": "^0.3.26",
-    "@langchain/langgraph": "^0.2.34",
-    "@langchain/openai": "^0.3.16",
-    "bignumber.js": "^9.1.2",
-    "dotenv": "^16.4.7",
-    "redis": "^5.0.0"
+    "@hashgraph/sdk": "^2.66.0",
+    "@hashgraphonline/standards-sdk": "^0.0.137",
+    "@langchain/core": "^0.3.55",
+    "@langchain/langgraph": "^0.2.71",
+    "@langchain/openai": "^0.5.11",
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "bignumber.js": "^9.3.0",
+    "chalk": "^5.4.1",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.5.0",
+    "gradient-string": "^3.0.0",
+    "langchain": "^0.3.29",
+    "redis": "^5.0.0",
+    "zod": "^3.25.28"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hedera-dev/hedera-agent-kit"
+    "url": "git+https://github.com/hedera-dev/hedera-agent-kit.git"
   }
 }
