@@ -11,7 +11,7 @@ import {
 } from "@hashgraph/sdk";
 import { AccountData, hederaPrivateKeyFromString } from "./testnetUtils";
 
-import HederaAgentKit from "../../agent";
+import { HederaAgentKit } from "../../agent";
 import { CreateFTOptions, CreateNFTOptions, HederaNetworkType } from "../../types";
 import { AirdropRecipient } from "../../tools/transactions/strategies";
 import { AirdropResult, CreateTokenResult, CreateTopicResult, SubmitMessageResult } from "../../tools";
